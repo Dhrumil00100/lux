@@ -1,0 +1,337 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-dm-sans);
+  --font-heading: var(--font-cormorant);
+  --font-subheading: var(--font-didact);
+  --color-dark: var(--dark);
+  --color-navy: var(--navy);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-cream: var(--cream);
+  --color-white: var(--white);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--navy);
+  --color-primary-foreground: var(--cream);
+  --color-secondary: var(--dark);
+  --color-secondary-foreground: var(--cream);
+  --color-accent: var(--gold);
+  --color-accent-foreground: var(--dark);
+  --color-card: var(--white);
+  --color-card-foreground: var(--navy);
+  --color-popover: var(--white);
+  --color-popover-foreground: var(--navy);
+  --color-destructive: #DC2626;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+}
+
+:root {
+  /* Luxury Editorial Color Palette */
+  --dark: #0D0D0D;
+  --navy: #1A1A2E;
+  --gold: #C9A96E;
+  --gold-light: #E8D5B0;
+  --cream: #F5F0E8;
+  --white: #FDFCFA;
+  --muted: #8A8070;
+  --border: #2A2A3E;
+
+  /* Theme mappings */
+  --background: var(--cream);
+  --foreground: var(--navy);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-cream text-navy antialiased;
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Editorial Typography */
+  h1, h2, h3, h4 {
+    font-family: var(--font-cormorant), serif;
+  }
+
+  .font-heading {
+    font-family: var(--font-cormorant), serif;
+  }
+
+  .font-subheading {
+    font-family: var(--font-didact), sans-serif;
+  }
+
+  .font-body {
+    font-family: var(--font-dm-sans), sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Luxury Editorial Spacing */
+  .section-padding {
+    @apply py-24 md:py-32 lg:py-40;
+  }
+
+  .container-padding {
+    @apply px-6 md:px-8 lg:px-12;
+  }
+
+  /* Gold accent line */
+  .gold-line {
+    @apply h-px bg-gold;
+  }
+
+  .gold-line-vertical {
+    @apply w-px bg-gold;
+  }
+}
+
+/* Hide default cursor on desktop */
+@media (hover: hover) and (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--gold);
+  color: var(--dark);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-light);
+}
+
+/* Ken Burns Effect - 8s slow zoom */
+@keyframes ken-burns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+.ken-burns {
+  animation: ken-burns 8s ease-out forwards;
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes marquee2 {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee2 {
+  animation: marquee2 25s linear infinite;
+  animation-delay: -12.5s;
+}
+
+/* Custom Cursor Styles */
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-ring {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease-out, height 0.2s ease-out, border-color 0.2s ease-out, background-color 0.2s ease-out;
+}
+
+.cursor-ring.hover {
+  width: 60px;
+  height: 60px;
+  background-color: var(--gold);
+  border-color: var(--gold);
+  mix-blend-mode: difference;
+}
+
+/* Service Card Hover Effects */
+.service-card {
+  transition: transform 0.2s ease-out, border-color 0.2s ease-out, background-color 0.2s ease-out;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold);
+  background-color: var(--white);
+}
+
+/* Staff Card Hover Effects */
+.staff-card {
+  overflow: hidden;
+}
+
+.staff-card .staff-photo {
+  transition: transform 0.4s ease-out;
+}
+
+.staff-card:hover .staff-photo {
+  transform: scale(1.05);
+}
+
+.staff-card .staff-overlay {
+  transform: translateY(100%);
+  transition: transform 0.3s ease-out;
+}
+
+.staff-card:hover .staff-overlay {
+  transform: translateY(0);
+}
+
+/* Gallery Image Hover Effects */
+.gallery-item {
+  overflow: hidden;
+}
+
+.gallery-item img {
+  transition: transform 0.4s ease-out;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.1);
+}
+
+.gallery-item .gallery-overlay {
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+
+/* CTA Button Gold Fill Sweep */
+.btn-gold-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-gold-sweep::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gold);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-out;
+  z-index: 0;
+}
+
+.btn-gold-sweep:hover::before {
+  transform: translateX(0);
+}
+
+/* Nav Link Gold Underline */
+.nav-link-gold {
+  position: relative;
+}
+
+.nav-link-gold::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease-out;
+}
+
+.nav-link-gold:hover::after {
+  transform: scaleX(1);
+}
+
+/* Image Reveal Animation */
+@keyframes gold-reveal {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.gold-reveal {
+  animation: gold-reveal 0.8s ease-out forwards;
+}
+
+/* Count up animation helper */
+@keyframes count-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
