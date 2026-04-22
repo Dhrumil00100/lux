@@ -58,7 +58,7 @@ export default function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 lg:px-12 min-h-screen flex flex-col justify-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 lg:px-12 min-h-screen pt-24 flex flex-col justify-center">
         <div className="max-w-5xl">
           {/* Main Heading - Word by word reveal */}
           <motion.div
