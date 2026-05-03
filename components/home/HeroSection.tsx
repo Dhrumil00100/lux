@@ -1,7 +1,9 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, Variants } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 // Word-by-word text reveal animation
@@ -11,19 +13,20 @@ const containerVariants: Variants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.15,
-      delayChildren: 0.3,
+      delayChildren: 0.4,
     },
   },
 };
 
 const wordVariants: Variants = {
-  hidden: { opacity: 0, y: 60 },
+  hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
   visible: {
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: {
-      duration: 0.8,
-      ease: "easeOut",
+      duration: 1.2,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 };
@@ -34,44 +37,71 @@ const fadeInUp: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.6,
-      ease: "easeOut",
+      duration: 1,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 };
 
 export default function HeroSection() {
   const words = ["WHERE", "LUXURY", "MEETS", "ARTISTRY"];
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+
+  // Parallax effects
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
-    <section className="relative min-h-screen bg-dark overflow-hidden">
-      {/* Background Layer with Ken Burns Effect */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat ken-burns"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1560066984-138daaa0a5b2?w=1920&q=80')`,
-          }}
-        />
-        {/* Gradient overlay - bottom to top as per PRD */}
-        <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/60 to-dark/30" />
-      </div>
+    <section ref={ref} className="relative min-h-[100svh] bg-dark overflow-hidden">
+      {/* Background Layer with Parallax and Ken Burns */}
+      <motion.div 
+        className="absolute inset-0 w-full h-[120%] -top-[10%]"
+        style={{ y: backgroundY }}
+      >
+        <motion.div
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 10, ease: "easeOut" }}
+          className="relative w-full h-full"
+        >
+          <Image
+            src="https://images.unsplash.com/photo-1560066984-138daaa0a5b2?w=1920&q=80"
+            alt="Luxury salon interior"
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="100vw"
+            quality={90}
+          />
+        </motion.div>
+        {/* Gradient overlay - bottom to top for contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/40 to-transparent" />
+        <div className="absolute inset-0 bg-dark/20" /> {/* Slight dark tint everywhere */}
+      </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 lg:px-12 min-h-screen pt-24 flex flex-col justify-center">
+      <motion.div 
+        className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 lg:px-12 min-h-[100svh] pt-24 flex flex-col justify-center"
+        style={{ y: textY, opacity }}
+      >
         <div className="max-w-5xl">
           {/* Main Heading - Word by word reveal */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="mb-8"
+            className="mb-8 flex flex-wrap gap-x-4 md:gap-x-6"
           >
-            {words.map((word) => (
+            {words.map((word, i) => (
               <motion.h1
-                key={word}
+                key={i}
                 variants={wordVariants}
-                className="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[120px] font-semibold leading-[0.9] tracking-tight text-white"
+                className="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[110px] font-normal leading-[1.1] tracking-tight text-white m-0"
               >
                 {word}
               </motion.h1>
@@ -83,8 +113,8 @@ export default function HeroSection() {
             variants={fadeInUp}
             initial="hidden"
             animate="visible"
-            transition={{ delay: 1 }}
-            className="text-white/60 text-lg md:text-xl font-body max-w-xl mb-12 leading-relaxed"
+            transition={{ delay: 1.2 }}
+            className="text-white/70 text-base md:text-lg lg:text-xl font-body max-w-xl mb-12 leading-relaxed font-light tracking-wide"
           >
             Premium hair & beauty experiences curated for the discerning.
           </motion.p>
@@ -94,53 +124,54 @@ export default function HeroSection() {
             variants={fadeInUp}
             initial="hidden"
             animate="visible"
-            transition={{ delay: 1.1 }}
-            className="flex flex-col sm:flex-row gap-4"
+            transition={{ delay: 1.4 }}
+            className="flex flex-col sm:flex-row gap-6"
           >
             <Link href="/book">
-              <button className="relative px-10 py-4 text-sm font-medium tracking-[0.2em] uppercase bg-gold text-dark hover:text-dark overflow-hidden group">
-                <span className="absolute inset-0 bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
-                <span className="relative z-10 flex items-center gap-2">
+              <button className="relative px-10 py-5 text-xs font-medium tracking-[0.25em] uppercase bg-gold text-dark overflow-hidden group">
+                <span className="absolute inset-0 bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[0.16,1,0.3,1]" />
+                <span className="relative z-10 flex items-center gap-3">
                   Book Appointment
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-1" />
                 </span>
               </button>
             </Link>
             <Link href="/services">
-              <button className="px-10 py-4 text-sm font-medium tracking-[0.2em] uppercase border border-white/30 text-white hover:bg-white/10 hover:border-white/50 transition-all duration-200">
-                View Services
+              <button className="relative px-10 py-5 text-xs font-medium tracking-[0.25em] uppercase border border-white/20 text-white overflow-hidden group">
+                <span className="absolute inset-0 bg-white/10 transform -translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[0.16,1,0.3,1]" />
+                <span className="relative z-10 transition-colors duration-500 group-hover:text-white">View Services</span>
               </button>
             </Link>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* EST. 2018 · AHMEDABAD - Centered over gold line */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.3, duration: 0.6 }}
-        className="absolute bottom-24 left-0 right-0 flex items-center justify-center gap-4"
+        transition={{ delay: 1.6, duration: 1 }}
+        className="absolute bottom-24 left-0 right-0 flex items-center justify-center gap-6 z-10"
       >
-        <div className="w-24 h-px bg-gold" />
-        <span className="font-subheading text-xs uppercase tracking-[0.3em] text-gold">
+        <div className="w-16 md:w-32 h-[1px] bg-gold/50" />
+        <span className="font-subheading text-[10px] uppercase tracking-[0.4em] text-gold/80">
           EST. 2018 · AHMEDABAD
         </span>
-        <div className="w-24 h-px bg-gold" />
+        <div className="w-16 md:w-32 h-[1px] bg-gold/50" />
       </motion.div>
 
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.4, duration: 0.6 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+        transition={{ delay: 1.8, duration: 1 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-10"
       >
-        <span className="text-white/40 text-[10px] tracking-[0.3em] uppercase">Scroll</span>
+        <span className="text-white/40 text-[9px] tracking-[0.4em] uppercase">Scroll</span>
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="w-px h-8 bg-gradient-to-b from-gold to-transparent"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+          className="w-[1px] h-10 bg-gradient-to-b from-gold/50 to-transparent"
         />
       </motion.div>
     </section>

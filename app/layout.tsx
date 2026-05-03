@@ -3,7 +3,7 @@ import { Cormorant_Garamond, DM_Sans, Didact_Gothic } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import CustomCursor from "@/components/shared/CustomCursor";
+import CustomCursor from "@/components/layout/CustomCursor";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
